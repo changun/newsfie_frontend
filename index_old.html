@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" rel="stylesheet" />
+    <title>Personalized News</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+    <style>
+        body {
+            width: 100%;
+        }
+        #main{
+            width: 90%;
+            max-width: 500px;
+            margin-top: 10%;
+            margin-left: auto;
+
+            margin-right: auto;
+        }
+
+        #content{
+            padding-bottom: 1.5em;
+        }
+        .help.circle.icon{
+            font-size: x-small;
+            vertical-align: super;
+        }
+
+
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="ui card" id="main">
+    <div class="content" id="content">
+        <div class="ui form loading" id="form">
+            <h3 class="ui dividing header"
+                id="provider-header"
+                data-content="Your digital records will be used to personalize your news feed." >
+                Please connect with the services you use
+                <i class="help circle icon"></i>
+
+            </h3>
+            <div class="field">
+                <div class="ui toggle checkbox gmail">
+                    <label>Gmail</label>
+                    <input data-provider="gmail" type="checkbox">
+                </div>
+
+            </div>
+            <div  class="field">
+                <div class="ui toggle checkbox youtube">
+                    <label>Youtube</label>
+                    <input data-provider="youtube" type="checkbox">
+                </div>
+            </div>
+            <div  class="field">
+                <div class="ui toggle checkbox twitter">
+                    <label>Twitter</label>
+                    <input data-provider="twitter" type="checkbox">
+                </div>
+            </div>
+            <h3 class="ui dividing header">Choose a news source</h3>
+            <div class="grouped inline fields">
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="news" checked="checked" value="medium">
+                        <label>Medium.com</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="news" value="hn">
+                        <label>Hacker New</label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="ui two bottom attached buttons">
+        <div class="ui button" >
+            <i class="bar chart icon"></i>
+            Analysis Details
+        </div>
+        <div class="ui primary button">
+            <i class="forward mail icon"></i>
+            To News Feed
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $.getJSON("https://lifestreams.smalldata.io/rec/api/status", function(data){
+        // toggle on those services that user already connected
+        if(data["connected-providers"]) {
+            data["connected-providers"].forEach(function (provider) {
+                $("." + provider).checkbox('check');
+            });
+        }
+        $("#provider-header").popup();
+        // redirect to auth page when user toggle on a service
+        $('.ui.checkbox.toggle').checkbox(
+                {
+                    onChange :
+                            function(e){
+                                var provider = $(this).data('provider');
+                                if($("." + provider).checkbox('is checked')) {
+                                    window.location.href = "https://lifestreams.smalldata.io/rec/auth/" + provider;
+                                }else{
+                                    window.location.href = "https://lifestreams.smalldata.io/rec/deauth/" + provider;
+
+                                }
+                            }
+                }
+        );
+        $('.ui.checkbox.radio').checkbox();
+        $(".button").click(function(){
+            if($(".twitter").checkbox('is checked')
+                    || $(".gmail").checkbox('is checked')
+                    || $(".youtube").checkbox('is checked')){
+                var news = $('input[name=news]:checked').val();
+                var seeNews = $(this).hasClass("primary");
+                if(seeNews){
+                    window.location.href = "https://lifestreams.smalldata.io/hn/" + news +".html";
+                }else{
+                    window.location.href = "https://lifestreams.smalldata.io/hn/prefs.html?source=" + news;
+                }
+
+            }else{
+                alert("Please choose at least one service");
+            }
+        });
+        $(".form").removeClass("loading");
+
+    })
+</script>
+</body>
+</html>

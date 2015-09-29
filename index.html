@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon"
+          type="image/png"
+          href="newsfie.png">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" rel="stylesheet" />
+    <link href="demo.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.runtime.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js"></script>
+    <title>Newsfie Demo</title>
+</head>
+<body>
+<div class="ui segment compact" id="main">
+
+    <form>
+        <div class="ui form loading" id="form">
+            <h3 class="ui dividing header"
+                id="provider-header"
+                data-content="Your digital records will NOT be saved." >
+                Connect your accounts for personalization:
+                <i class="help circle icon"></i>
+
+            </h3>
+            <div class="field">
+                <div class="ui toggle checkbox gmail">
+                    <label>Gmail</label>
+                    <input data-provider="gmail" type="checkbox">
+                </div>
+
+            </div>
+<!--
+            <div  class="field">
+                <div class="ui toggle checkbox youtube">
+                    <label>Youtube</label>
+                    <input data-provider="youtube" type="checkbox">
+                </div>
+            </div>
+-->
+            <div  class="field">
+                <div class="ui toggle checkbox twitter">
+                    <label>Twitter</label>
+                    <input data-provider="twitter" type="checkbox">
+                </div>
+            </div>
+
+            <div  class="field">
+                <div class="ui toggle checkbox slack">
+                    <label>Slack</label>
+                    <input data-provider="slack" type="checkbox">
+                </div>
+            </div>
+            <!--
+                            <h3 class="ui dividing header">Choose a news source</h3>
+            <div class="grouped inline fields">
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="news" checked="checked" value="medium">
+                        <label>Medium.com</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="news" value="hn">
+                        <label>Hacker New</label>
+                    </div>
+                </div>
+
+            </div>
+             -->
+
+            <div class="ui primary button">
+                <i class="forward mail icon"></i>
+                To My News Feed
+            </div>
+        </div>
+
+
+
+        <!--
+        <div class="ui two bottom attached buttons">
+            <div class="ui button" >
+                <i class="bar chart icon"></i>
+                Analysis Details
+            </div>
+
+        </div>
+        -->
+    </form>
+
+    <div class="ui horizontal divider">
+        Or
+    </div>
+    <h3 class="ui header">See what we recommend to these people based on their Twitter data:</h3>
+    <div class="ui list huge" id="twitters">
+        <script id="entry-template" type="text/x-handlebars-template">
+            <div class="item" data-handle="{{handle}}">
+                <img class="ui avatar image" src="https://twitter.com/{{handle}}/profile_image?size=normal">
+                <div class="content">
+                    <a class="header">{{name}}</a>
+                    <a class="description">@{{handle}}</a>
+                </div>
+            </div>
+        </script>
+    </div>
+
+    <div class="ui list huge">
+        <div class="item" data-handle="Charles_Dickens">
+            <img class="ui avatar image" src="https://twitter.com/Charles_Dickens/profile_image?size=normal">
+            <div class="content">
+                <a class="header">Charles Dickens</a>
+                <a class="description">His letters from 1835 to 1857</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h3 id="contact" >Developed By <a href="mailto:changun.tw@gmail.com">Andy Hsieh</a> @<a href="http://smalldata.io">Smalldata.io</a><h3>
+<script>
+    var people = [
+
+        {
+         name:"Barack Obama",
+         handle:"BarackObama"
+        },
+        {
+            name:"Danah Boyd",
+            handle:  "zephoria"
+        },
+        {   name:"Cornell Tech",
+            handle:"cornell_tech"
+        },
+        {   name:"Bill Gates",
+            handle:"BillGates"
+        },
+        {   name:"Andrew McAfee",
+            handle:"amcafee"
+
+        },
+        {   name: "Ray Velez",
+            handle: "rvelez"
+
+        },
+        {
+            name:"Hilary Mason",
+            handle:"hmason"
+        },
+
+        {   name:"Bill de Blasio",
+            handle:"BilldeBlasio"
+        },
+        {
+            name:"Todd Park",
+            handle:"todd_park"
+        }
+        ,
+
+
+        {   name:"Elon Musk",
+            handle:"elonmusk"
+        },
+        {
+            name: "David Brooks",
+            handle: "nytdavidbrooks"
+        },
+        {   name:"LeBron James",
+            handle:"KingJames"
+        },
+        {
+            name:"Katty Perry",
+            handle:"katyperry"
+        },
+        {
+            name:"Oprah Winfrey",
+            handle:"oprah"
+        },
+
+        {
+            name:"Neil Patrick Harris",
+            handle:"ActuallyNPH"
+        }
+
+    ];
+    var toStoriesFor = function(twitter){
+        if(twitter == "Charles_Dickens") {
+            window.location.href = "medium.html?dickens=1";
+        }else{
+
+            window.location.href = "medium.html?twitter=" + twitter;
+        }
+    };
+    var onItemClicked = function(){
+        toStoriesFor($(this).data("handle"))
+    };
+    var onSubmit = function(){
+        if(input.val().length > 0){
+            toStoriesFor(input.val());
+        }else{
+            alert("Please enter your twitter handle or choose a person below to see recommended stories");
+        }
+
+    };
+
+    var source   = $("#entry-template").html();
+    var template = Handlebars.compile(source);
+    var input = $("#twitter-handle");
+    // generate and append story cards
+    var peopleDOMs = people.map(
+            function(person){
+                // create entry
+                var item = $(template(person));
+                return item;
+            });
+    $("#twitters").append(peopleDOMs);
+    $(".item").click(onItemClicked);
+
+
+
+    $.getJSON("/rec/api/status", function(data){
+        // toggle on those services that user already connected
+        if(data["connected-providers"]) {
+            data["connected-providers"].forEach(function (provider) {
+                $("." + provider).checkbox('check');
+            });
+        }
+        $("#provider-header").popup();
+        // redirect to auth page when user toggle on a service
+        $('.ui.checkbox.toggle').checkbox(
+                {
+                    onChange :
+                            function(e){
+                                var provider = $(this).data('provider');
+                                if($("." + provider).checkbox('is checked')) {
+                                    window.location.href = "/rec/auth/" + provider;
+                                }else{
+                                    window.location.href = "/rec/deauth/" + provider;
+
+                                }
+                            }
+                }
+        );
+        $('.ui.checkbox.radio').checkbox();
+        $(".button").click(function(){
+            if($(".twitter").checkbox('is checked')
+                    || $(".gmail").checkbox('is checked')
+                    || $(".youtube").checkbox('is checked')){
+                window.location.href =  "medium.html";
+            }else{
+                alert("Please choose at least one service");
+            }
+        });
+        $(".form").removeClass("loading");
+
+    })
+</script>
+</body>
+</html>

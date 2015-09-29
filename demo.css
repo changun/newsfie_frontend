@@ -1,0 +1,19 @@
+#main{
+    width: 90%;
+    max-width: 500px;
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto
+}
+#contact{
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto
+}
+.item{
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+.primary.button{
+
+}

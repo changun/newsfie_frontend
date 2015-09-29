@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Newsfie: Your Personalized News Feed (Medium.com)</title>
+    <link rel="icon"
+          type="image/png"
+          href="newsfie.png">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" rel="stylesheet" />
+    <link href="./loader.css" rel="stylesheet" />
+    <link href="./medium.css" rel="stylesheet"/>
+    <link href="label.min.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.runtime.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/js-url/1.8.4/url.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="auth.js"></script>
+
+</head>
+<body>
+<h1 id="title">Newsfie</h1>
+<h2 id="subtitle">your personalized news feed</h2>
+<div class="column"><i class="setting icon"></i></div>
+<div>
+    <div class="ui link cards">
+        <ul class="loader">
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <script id="entry-template" type="text/x-handlebars-template">
+
+            <div class="ui card">
+                <a href="{{canonicalUrl}}" target="_blank" class="image block-image" style="background-image:url(https://d262ilb51hltx0.cloudfront.net/max/400/{{virtuals.previewImage.imageId}})"></a>
+                <div class="content">
+                    <a class="header" target="_blank" href="{{canonicalUrl}}">{{title}}</a>
+                    <div class="meta">
+                        <a target="_blank">{{virtuals.latestPublishedAtAbbreviated}}</a>
+                    </div>
+                    <div class="description">
+                        {{virtuals.snippet}}
+                    </div>
+                </div>
+                <div class="extra content">
+                    <span class="left floated thumbs up button"  data-id="{{id}}" data-preference="like">
+                      <i class="up icon thumbs outline"></i>
+                      More Like This
+                    </span>
+                    <span class="right floated thumbs down button"  data-id="{{id}}" data-preference="dislike">
+                      <i class="down icon thumbs outline"></i>
+                      Less
+                    </span>
+                </div>
+            </div>
+
+        </script>
+
+    </div>
+    <div class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            User Profile
+        </div>
+        <div class="content">
+            <div id="chart_div"></div>
+        </div>
+    </div>
+    <div class="ui segment load-more" id="load-more">
+        <div class="ui active inverted dimmer" id="load-more-loader">
+            <div class="ui loader"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    google.load('visualization', '1', {packages: ['corechart', 'bar']});
+    var source   = $("#entry-template").html();
+    var template = Handlebars.compile(source);
+    var likes = {}, dislikes = {}, shown = {};
+    var cardContainer = $(".cards");
+    var pref, origPref, titles;
+    var loadMoreLoader = $("#load-more-loader");
+    var loadMoreDiv = $(".load-more");
+    var loading = false;
+    var settingButton = $(".setting.icon");
+    var popular = {};
+
+    function appendStories (stories){
+        stories = stories.filter(function(story){
+            return !shown[story.id] || !popular[story.id];
+        });
+        // generate and append story cards
+        var cards = stories.map(
+                function(story){
+                    // create card
+                    var card = $(template(story));
+                    // and setup thumb button's click events
+                    card.find(".thumbs.button")
+                            .click(onThumbsClicked);
+
+                    return card;
+
+                });
+        cardContainer.append(cards);
+
+        // keep the record of the shown stories
+        stories.forEach(
+                function(story){
+                    shown[story.id] = true;
+                });
+    }
+
+
+
+    function byPopularity (data) {
+        var cardContainer = $(".cards").empty();
+        var recommendedIds = {};
+        data["stories"].forEach(function(story){
+            recommendedIds[story.canonicalUrl] = true;
+        });
+        var cards = data["stories-by-popularity"].map(
+                function(story){
+                    var card = $(template(story));
+                    if (!recommendedIds[story.canonicalUrl]){
+                        card.addClass("not-recommended");
+                    }
+                    return card;
+                });
+        cardContainer.append(cards);
+    }
+
+
+    function onThumbsClicked (){
+        var thumbButton = $(this);
+        var id = thumbButton.data("id");
+
+        if($(this).data("preference") == "like"){
+            likes[id] = true;
+            delete dislikes[id];
+            thumbButton.find(".icon").transition('pulse');
+        }else{
+            dislikes[id] = true;
+            delete likes[id];
+            // remove the story card
+            thumbButton.closest(".card").transition('horizontal flip');
+        }
+        thumbButton.parent().find(".clicked").removeClass("clicked");
+        thumbButton.addClass("clicked");
+
+    }
+    function showPreferences(){
+        function drawPref(title) {
+            var data = pref.map(function(p, index){
+                var origP = origPref[index];
+                var title = titles[index];
+                title = title.split(",").slice(0, 3).join(",");
+                return [title, origP, (p - origP)];
+            });
+            data.sort(function(a, b) {
+                return parseFloat(b[1]) - parseFloat(a[1]);
+            });
+            data = data.slice(0,25);
+            data = [["Topic", "Initial", "Offset"]].concat(data);
+            data = google.visualization.arrayToDataTable(data);
+
+            var options = {
+                title: title,
+                chartArea: {width: '60%', height:'85%'},
+                hAxis: {
+                    title: 'Weight'
+                },
+                vAxis: {
+                    title: 'Topics'
+                }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+        $('.modal').modal('show');
+
+        drawPref("", pref);
+
+
+
+
+    }
+    function loadMoreStories (callback){
+        var data = {
+            likes: Object.keys(likes),
+            dislikes: Object.keys(dislikes),
+            count: 10,
+            twitter: url('?twitter'),
+            "dickens": url('?dickens'),
+            ignores: Object.keys(shown)
+        };
+        loading = true;
+        api("medium", data, function(data){
+            callback(data);
+            pref = data.pref;
+            origPref = data["orig-pref"];
+            titles = data["topic-titles"];
+           // data["stories-by-popularity"].forEach(function(s){popular[s.id]=true;});
+            loading = false;
+        });
+
+    }
+    /*** Init ***/
+    loadMoreDiv.hide();
+    // issue request to rec. sys.
+    loadMoreStories(function(data){
+
+        cardContainer.empty();
+        appendStories(data.stories);
+        loadMoreDiv.show();
+        settingButton.click(showPreferences);
+        if(url('?')==""){
+            toastr.info("Personalization finished. The access to your data has been revoked entirely.")
+        }
+        $(window).scroll(function() {
+            if(!loading && $(window).scrollTop()+301 >= $(document).height() - $(window).height()) {
+                loadMoreLoader.show();
+                loadMoreStories(function(data){
+                    appendStories(data.stories);
+                    $(window).scrollTop($(window).scrollTop()-1);
+                    loadMoreLoader.hide();
+                });
+
+            }
+        });
+    });
+
+
+</script>
+</html>
