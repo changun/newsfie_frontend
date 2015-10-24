@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon"
+          type="image/png"
+          href="http://smalldata.io/startup/common-files/icons/sdl_logo12.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.dotdotdot/1.7.4/jquery.dotdotdot.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.js"></script>
+    <script src="https://cdn.jsdelivr.net/keyboardjs/0.4.2/keyboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.3.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
+    <script>
+
+
+    </script>
+    <title>Immersive Recommendation User Study</title>
+    <style>
+        #main {
+            height: 100%;
+            width: 100%;
+        }
+
+        .segment.answer {
+
+            padding: 30px;
+        }
+
+        .navigation {
+            margin-top: 60px;
+        }
+
+        .cover {
+
+            margin-right: 1em;
+            margin-bottom: 1em;
+            width: 400px;
+            height: 230px;
+
+            /* Make the background image cover the area of the <div>, and clip the excess */
+
+        }
+
+        #article {
+            margin-right: 1em;
+            margin-bottom: 1em;
+
+        }
+        #content{
+            margin-bottom: 10px;
+            padding-right: 100px;
+        }
+        .form {
+            width: 230px;
+            margin: auto;
+        }
+
+        #userIdDiv{
+            font-size: x-small;
+            float: right;
+            right: 1px;
+            width: 100px;
+        }
+        #answer{
+            padding-top: 100px;
+            width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Medium Session Modal -->
+<div class="ui modal medium">
+
+    <div class="header">
+        News Article Preferences
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <img src="http://www.androidheadlines.com/wp-content/uploads/2015/06/Io6eZONw-01.jpeg"/>
+        </div>
+        <div class="description">
+            <div class="ui header">
+                In this session, you will be presented with articles from Medium.com.
+            </div>
+            <p> Please specify whether the presented article is interesting to you.
+                We only present a snippet of each article,
+                but you can click <b>Read More</b> button to read the complete story.</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui positive right labeled icon button">
+            Got it!
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+
+<!-- Meetup Session Modal -->
+<div class="ui modal meetup">
+    <div class="header">
+        Meetup Information Session
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Meetup_Logo_2015.png"/>
+        </div>
+        <div class="description">
+            <div class="ui header"> In this session, you will be presented with NYC meetup events from Meetup.com.</div>
+            <p> Please specify whether the presented meetup is interesting to you.
+                We only present a snippet of each meetup description,
+                but you can click <b>Read More</b> button to read the complete description.</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui positive right labeled icon button">
+            Got it!
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Transition Modal -->
+<div class="ui basic modal trans">
+    <i class="close icon"></i>
+
+    <div class="header">
+        This is the last question of this session.
+    </div>
+    <div class="image content">
+        <div class="image">
+            <i class="warning icon"></i>
+        </div>
+        <div class="description">
+            <p>This is the last question of this session. Click <b>"X"</b> if you want to modify your responses or click "Proceed" to proceed to the next session.
+                Note that you won't be able to modify the responses after you proceed.</p>
+        </div>
+    </div>
+
+    <div class="actions">
+        <div class="ui green basic inverted button positive right labeled icon button">
+            <i class="checkmark icon"></i>
+            Proceed
+        </div>
+    </div>
+</div>
+
+<!-- Pilot/Consent Modal -->
+<div class="ui modal consent small">
+    <div class="header">
+        Are you a participant?
+    </div>
+
+    <div class="actions">
+       <!--
+        <div class="ui negative button">
+            No, I am a pilot tester.
+        </div>
+       -->
+        <div class="ui positive right labeled icon button">
+            Yes, I am.
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- The End Model -->
+<div class="ui modal end small">
+    <div class="header">
+        The study is over
+    </div>
+    <div class="image content">
+        <div class="image">
+            <i class="thumbs up icon"></i>
+        </div>
+        <div class="description">
+            <div class="ui header">Thank you for your participation. Your User Id is <b><span class="userId"></span></b>. Please inform the study coordinator. </div>
+            <table class="ui celled padded table">
+                <thead>
+                <tr><th class="single line">Algorithm</th>
+                    <th class="single line">News Avg. Rating</th>
+                    <th class="single line">Meetup Avg. Rating</th>
+                </tr></thead>
+                <tbody id="stats">
+                <script id="statsTemp" type="text/x-handlebars-template">
+                    <tr>
+                        <td>
+                            <h2 class="ui center aligned header">{{name}}</h2>
+                        </td>
+                        <td class="single line">
+                            {{medium}}
+                        </td>
+                        <td class="single line">
+                            {{meetup}}
+                        </td>
+                    </tr>
+
+                </script>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Rating table -->
+
+<div class="segment">
+    <div class="ui text loader">Retrieving Digital Traces<br> (Take No More Than 20 Seconds)</div>
+
+
+<div class="ui breadcrumb study-content">
+    <a class="section" id="session_name"></a>
+    <span class="divider">/</span>
+
+    <div class="active section"><span id="index"></span> of <span id="item_set_size"></span></div>
+
+</div>
+<div class="ui segments study-content horizontal">
+
+    <div class="ui segment main" id="main">
+
+        <div class="cover"></div>
+        <div class="article" id="article">
+
+            <h2></h2>
+
+            <div id="content"></div>
+            <div><p><a id="read_more" target="_blank">Read More</a></p></div>
+
+        </div>
+
+
+    </div>
+    <div class="ui segment" id="answer">
+
+
+        <div class="ui column centered grid">
+            <div class="row" style="padding-bottom: 0px;">
+                <div class="column sixteen wide">
+                    <div class="ui form large">
+                        <div class="grouped fields">
+                            <label for="preference" id="question"></label>
+
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="preference" tabindex="0" class="hidden" data-rating="1">
+                                    <label>1. Not at all interesting</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="preference" tabindex="0" class="hidden" data-rating="2">
+                                    <label>2. Slightly interesting</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="preference" tabindex="0" class="hidden" data-rating="3">
+                                    <label>3. Moderately interesting</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="preference" tabindex="0" class="hidden" data-rating="4">
+                                    <label>4. Very interesting</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="preference" tabindex="0" class="hidden" data-rating="5">
+                                    <label>5. Extremely interesting</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column row navigation">
+                <div class="ui buttons">
+                    <button class="ui labeled icon button  basic" id="back">
+                        <i class="left chevron icon"></i>
+                        Back
+                    </button>
+
+
+                    <button class="ui right labeled icon button  basic" id="next">
+                        Next
+                        <i class="right chevron icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    </div>
+<script src="study.js"></script>
+<script>
+
+    var DOMs = {
+        main: $(".main"),
+        indexSpan: $("#index"),
+        content: $("#content"),
+        readMore: $("#read_more"),
+        next: $("#next"),
+        back: $("#back"),
+        rating: $('.ui.radio.checkbox').checkbox(),
+        title: $(".main h2"),
+        cover: $(".main .cover"),
+        item_set_size: $("#item_set_size"),
+        session_name: $("#session_name"),
+        question: $("#question"),
+        studyContent: $('.study-content'),
+        table: $('#stats'),
+        loader: $(".loader"),
+        userId: $(".userId")
+
+    };
+
+    var populateStory = function () {
+        DOMs.cover.css("background", "url(" + getCurItem().img + ") no-repeat");
+        DOMs.title.text(getCurItem().title);
+        DOMs.indexSpan.text(index + 1);
+        DOMs.item_set_size.text(getCurItemSet().length);
+        DOMs.session_name.text(settings[getCurSession()].name);
+        DOMs.content.empty();
+        DOMs.readMore.attr("href", getCurItem().url);
+        DOMs.readMore.click(function () {
+            getCurItem().readmore = true;
+        });
+        DOMs.question.text(settings[getCurSession()].question);
+        DOMs.content.html(getCurItem().content).find("img").remove();
+
+        DOMs.content.find("iframe").remove();
+        DOMs.content.find("a").attr("target","_blank");
+        DOMs.content.dotdotdot({
+            //	configuration goes here
+        });
+        DOMs.rating.each(function () {
+            var button = $(this);
+            var id = parseInt(button.find("input").data("rating"));
+            if (id == getCurItem().rating) {
+                button.checkbox('set checked');
+            } else {
+                button.checkbox('set unchecked'); 
+            }
+        });
+        DOMs.rating.checkbox('setting', 'onChecked', function () {
+            logEvent("checkbox", $(this).data("rating"));
+            getCurItem().rating = parseInt($(this).data("rating"));
+
+        });
+
+        if(getCurItem().startTimes){
+            getCurItem().startTimes.push(moment().format());
+        }else{
+            getCurItem().startTimes = [moment().format()];
+        }
+        logEvent("populateStory");
+    };
+
+    var startSession = function () {
+        logEvent("startSession", "start");
+        index = 0;
+        secondBatchLoaded = false;
+        loadNextBatch(0, function (newStories) {
+            setCurItemSet(getCurItemSet().concat(shuffle(newStories)));
+            var ids = getCurItemSet().map(function(e){return e.id;});
+            if($.unique(ids.slice(0)).length != ids.length){
+                alert("Something went wrong in retrieving stories. Please inform the study coordinator.");
+            }else{
+                $('.ui.modal.' + getCurSession()).modal(
+                        {
+                            closable: false,
+                            onApprove: function () {
+                                logEvent("startSession", "loaded");
+                                $('.study-content').show();
+                                populateStory();
+                            }
+                        }).modal('show');
+            }
+
+
+
+        });
+    };
+
+    var checked = function () {
+        DOMs.rating.each(function () {
+            var button = $(this);
+            var id = parseInt(button.find("input").data("rating"));
+            if (button.checkbox('is checked')) {
+                getCurItem().rating = id;
+            }
+        });
+        return getCurItem().rating != null;
+    };
+
+
+    var nextFunction = function () {
+        logEvent("next", "clicked");
+
+        if (checked()) {
+            showStatistics();
+            if(getCurItem().endTimes){
+                getCurItem().endTimes.push(moment().format());
+            }else{
+                getCurItem().endTimes = [moment().format()];
+            }
+            postLogs(function() {
+                if (index + 1 == getCurItemSet().length && !secondBatchLoaded) {
+                    // load next batch
+                    loadNextBatch(1, function (newStories) {
+                        setCurItemSet(getCurItemSet().concat(shuffle(newStories)));
+                        var ids = getCurItemSet().map(function(e){return e.id;});
+
+                        if($.unique(ids.slice(0)).length != ids.length){
+                            alert("Something went wrong in retrieving stories. Please inform the study coordinator.");
+                        }else{
+                            secondBatchLoaded = true;
+                            index++;
+                            populateStory();
+
+                        }
+                    });
+                } else if (index + 1 < getCurItemSet().length) {
+                    // show next story
+                    index++;
+                    populateStory();
+                } else{
+
+                    // show next session
+                    $('.ui.modal.trans').modal(
+                            {
+                                closable: true,
+                                onDeny: function () {
+                                    logEvent("transModal", "deny");
+                                    return true;
+                                },
+
+                                onApprove: function () {
+                                    DOMs.studyContent.hide();
+                                    logEvent("transModal", "approve");
+                                    if(sessionIndex + 1 < sessions.length) {
+                                        sessionIndex++;
+                                        index = 0;
+                                        startSession();
+                                    }else{
+                                        DOMs.studyContent.empty();
+                                        $('.ui.modal.end').modal(
+                                                {
+                                                    closable: false,
+                                                    onApprove: function () {
+                                                        window.location.href = "http://smalldata.io";
+                                                    }
+                                                }).modal("show");
+                                    }
+                                }
+                            }).modal('show')
+                    ;
+                    logEvent("transModal", "shown");
+                }
+            })
+        } else {
+            alert("Please choose your answer");
+        }
+    };
+    var backFunction = function () {
+        checked();
+        logEvent("back", "clicked");
+        if (index - 1 >= 0) {
+            index--;
+            populateStory();
+        }
+    };
+    DOMs.next.click(nextFunction);
+    //KeyboardJS.on("right", nextFunction);
+    DOMs.back.click(backFunction);
+    //KeyboardJS.on("left", backFunction);
+    DOMs.rating.each(function () {
+        var button = $(this);
+        var id = parseInt(button.find("input").data("rating"));
+        KeyboardJS.on(id.toString(),
+                function () {
+                    getCurItem().rating = id;
+                    button.checkbox('set checked');
+
+                });
+    });
+
+    DOMs.studyContent.hide();
+    $('.ui.modal.consent').modal(
+            {
+                closable: false,
+                onDeny: function () {
+                    logEvent("consentModal", "deny");
+                    info.pilot = true;
+                    info.count = 3;
+                    startSession();
+                },
+
+                onApprove: function () {
+                    logEvent("consentModal", "approve");
+                    info.pilot = false;
+                    info.count = 6;
+                    startSession();
+                }
+            }
+    ).modal('show');
+
+
+</script>
+</body>
+</html>
