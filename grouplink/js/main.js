@@ -1,46 +1,4 @@
 
-// Fireup the plugins
-$(document).ready(function(){
-	
-	// initialise  slideshow
-	 $('.flexslider').flexslider({
-        animation: "slide",
-        start: function(slider){
-          $('body').removeClass('loading');
-        }
-      });
-
-});
-/**
- * Handles toggling the navigation menu for small screens.
- */
-( function() {
-	var button = document.getElementById( 'topnav' ).getElementsByTagName( 'div' )[0],
-	    menu   = document.getElementById( 'topnav' ).getElementsByTagName( 'ul' )[0];
-
-	if ( undefined === button )
-		return false;
-
-	// Hide button if menu is missing or empty.
-	if ( undefined === menu || ! menu.childNodes.length ) {
-		button.style.display = 'none';
-		return false;
-	}
-
-	button.onclick = function() {
-		if ( -1 == menu.className.indexOf( 'srt-menu' ) )
-			menu.className = 'srt-menu';
-
-		if ( -1 != button.className.indexOf( 'toggled-on' ) ) {
-			button.className = button.className.replace( ' toggled-on', '' );
-			menu.className = menu.className.replace( ' toggled-on', '' );
-		} else {
-			button.className += ' toggled-on';
-			menu.className += ' toggled-on';
-		}
-	};
-} )();
-
 
 google.load('visualization', '1', {packages: ['corechart', 'bar']});
 var source   = $("#entry-template").html();
@@ -49,11 +7,16 @@ var likes = {}, dislikes = {}, shown = {};
 var cardContainer = $("#content");
 var pref, origPref, titles;
 var loadMoreLoader = $("#load-more-loader");
+var loader = $(".loader");
 var loadMoreDiv = $(".load-more");
 var loading = false;
 var settingButton = $(".setting.icon");
-
+var banner = $("#banner");
+var footer = $("footer");
+banner.hide();
+footer.hide();
 function appendStories (stories){
+
     stories = stories.filter(function(story){
         return !shown[story.id];
     });
@@ -163,9 +126,12 @@ function loadMoreStories (callback){
 
 }
 /*** Init ***/
-loadMoreDiv.hide();
 // issue request to rec. sys.
 loadMoreStories(function(data){
+    banner.transition({animation:'fade',
+                       duration  : 1000});
+    footer.show();
+    loader.hide();
     cardContainer.empty();
     appendStories(data.meetups);
     loadMoreDiv.show();
@@ -173,11 +139,10 @@ loadMoreStories(function(data){
     //toastr.info("Personalization finished. The access to your personal data has been revoked");
     $(window).scroll(function() {
         if(!loading && $(window).scrollTop()+301 >= $(document).height() - $(window).height()) {
-            loadMoreLoader.show();
             loadMoreStories(function(data){
-                appendStories(data.stories);
+                appendStories(data.meetups);
                 $(window).scrollTop($(window).scrollTop()-1);
-                loadMoreLoader.hide();
+
             });
 
         }

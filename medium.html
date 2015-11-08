@@ -21,6 +21,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/js-url/1.8.4/url.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="auth.js"></script>
+    <script src="jquery.inview.min.js"></script>
 
 </head>
 <body>
@@ -94,7 +95,7 @@
 
     function appendStories (stories){
         stories = stories.filter(function(story){
-            return !shown[story.id] || !popular[story.id];
+            return !shown[story.id];
         });
         // generate and append story cards
         var cards = stories.map(
@@ -213,6 +214,7 @@
         });
 
     }
+
     /*** Init ***/
     loadMoreDiv.hide();
     // issue request to rec. sys.
@@ -225,17 +227,16 @@
         if(url('?')==""){
             toastr.info("Personalization finished. The access to your data has been revoked entirely.")
         }
-        $(window).scroll(function() {
-            if(!loading && $(window).scrollTop()+301 >= $(document).height() - $(window).height()) {
-                loadMoreLoader.show();
+        loadMoreLoader.bind('inview', function (event, visible) {
+            if (visible) {
                 loadMoreStories(function(data){
                     appendStories(data.stories);
-                    $(window).scrollTop($(window).scrollTop()-1);
-                    loadMoreLoader.hide();
                 });
-
             }
         });
+
+        loadMoreDiv.show();
+
     });
 
 

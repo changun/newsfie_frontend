@@ -20,16 +20,17 @@
 <!-- Google web fonts. You can get your own bundle at http://www.google.com/fonts. Don't forget to update the CSS accordingly!-->
 <link href='https://fonts.googleapis.com/css?family=Droid+Serif|Ubuntu' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="css/normalize.css">
-<link rel="stylesheet" href="js/flexslider/flexslider.css">
-<link rel="stylesheet" href="css/basic-style.css">
 
+<link rel="stylesheet" href="css/basic-style.css">
+<link rel="stylesheet" href="css/loader.css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" rel="stylesheet" />
 <!-- end CSS-->
     
 <!-- JS-->
-    <script src="js/libs/modernizr-2.6.2.min.js"></script>
+
     <!-- jQuery -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
 
     <!-- google viz -->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -45,7 +46,7 @@
     <!-- auth -->
     <script src="../auth.js"></script>
 
-    <script defer src="js/flexslider/jquery.flexslider-min.js"></script>
+
 <!-- end JS-->
 
 
@@ -53,78 +54,23 @@
 <style type="text/css">
 <!--
 
-#columnsdemo .grid_1,
-#columnsdemo .grid_2,
-#columnsdemo .grid_3,
-#columnsdemo .grid_4,
-#columnsdemo .grid_5,
-#columnsdemo .grid_6,
-#columnsdemo .grid_7,
-#columnsdemo .grid_8,
-#columnsdemo .grid_9,
-#columnsdemo .grid_10,
-#columnsdemo .grid_11,
-#columnsdemo .grid_12 {
-border: solid 1px #999;
-color:#999;
-text-align: center;
-margin-top:20px;
-padding:20px 15px;
-}
+
 -->
 </style>
 </head>
-
-<body id="home">
-  
-<!-- header area -->
-    <header class="wrapper clearfix">
-		       
-        <div id="banner">        
-        	<div id="logo"><a href="#"><img src="images/logo.png" width = "200px" alt="logo"></a></div>
-        </div>
-
-        <!-- main navigation -->
-       <nav id="topnav" role="navigation">
-          <div class="menu-toggle">Menu</div>  
-          <ul class="srt-menu" id="menu-main-navigation">
-             <!-- <li class="current"><a href="/templates/basic.html">Sign in</a></li>
-              <li><a href="http://smalldata.io/">Contact us</a></li>-->
-              <!--<li><a href="#">menu item 3</a>
-                  <ul>
-                      <li>
-                          <a href="#">menu item 3.1</a>
-                      </li>
-                      <li class="current">
-                          <a href="#">menu item 3.2</a>
-                          <ul>
-                              <li><a href="#">menu item 3.2.1</a></li>
-                              <li><a href="#">menu item 3.2.2 with longer link name</a></li>
-                              <li><a href="#">menu item 3.2.3</a></li>
-                              <li><a href="#">menu item 3.2.4</a></li>
-                              <li><a href="#">menu item 3.2.5</a></li>
-                          </ul>
-                      </li>
-                      <li><a href="#">menu item 3.3</a></li>
-                      <li><a href="#">menu item 3.4</a></li>
-                  </ul>
-              </li>-->
-              <!--<li>
-                  <a href="#">menu item 4</a>
-                  <ul>
-                      <li><a href="#">menu item 4.1</a></li>
-                      <li><a href="#">menu item 4.2</a></li>
-                  </ul>
-              </li>-->
-              <!--<li>
-                  <a href="#">menu item 5</a>
-              </li>	
-          </ul>-->
-            </nav>  <!-- end main navigation -->
-
-    </header><!-- end header -->
+<div class="loader">
+<h3 style="width: 400px">Retrieving data...</h3>
+<ul class="loader">
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+</div>
+<body>
  
-        <div class="grid_12"  style="background:url(images/top.jpg); width:100%;height : 424px;background-repeat:no-repeat">
+        <div class="grid_12 hidden"
+             id="banner"
+             style="background:url(images/banner_large.jpg); width:100%;height : 500px;background-repeat:no-repeat;background-size:cover; ">
           <br>
          <h1 class = 'title'>Welcome to GroupLink</h1>
             <h2 class = "desc"> Meet with your friends and colleagues
@@ -140,14 +86,15 @@ padding:20px 15px;
 
 <!-- main content area -->   
 <div id="main" class="wrapper">
-    
-    
-<!-- content area -->    
+
+
+<!-- content area -->
 	<section id="content" class="wide-content">
 
     <script id="entry-template" type="text/x-handlebars-template">
         <div class="grid_4"
              data-link="{{link}}"
+             data-id="{{id}}"
              style="background:url({{group_photo.highres_link}});
           height: 200px;
           cursor : pointer;
@@ -159,7 +106,7 @@ padding:20px 15px;
           overflow: hidden;
           display: block;">
             <div class = "picturegradient">
-                <i class="fa fa-plus-circle fa-2x" style = "color:#FFFFFF;display:block;position:absolute;right:5%;top:5%;"></i>
+
                 <h1 class = "picturetitle">{{name}}</h1>
                 <p class = "smallpicturetitle">{{description}}</p>
 
@@ -167,14 +114,14 @@ padding:20px 15px;
         </div>
 
     </script>
+
     </section><!-- end content area -->
 
-      
+
   </div><!-- #end div #main .wrapper -->
 
-
 <!-- footer area -->    
-<footer>
+<footer class="hidden">
 	<div id="colophon" class="wrapper clearfix">
     	GroupLink  
     </div>

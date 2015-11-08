@@ -376,10 +376,10 @@ header{
 }
 #content {  
 	float:left;
-	width:65%;
+	width:90%;
 }
 #content.wide-content{
-	float:none;
+	/*float:none;*/
 	width:100%;
 }
 

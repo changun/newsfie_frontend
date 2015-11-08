@@ -62,7 +62,7 @@
             </div>
              -->
 
-            <div class="ui primary button">
+            <div class="ui primary disabled button">
                 <i class="forward mail icon"></i>
                 To My Meetup Recommendations
             </div>
@@ -84,7 +84,7 @@
     <div class="ui horizontal divider">
         Or
     </div>
-    <h3 class="ui header">See what we recommend to these people based on their Twitter:</h3>
+    <h3 class="ui header">See recommendations for people based on their Twitter:</h3>
     <div class="ui list huge" id="twitters">
         <script id="entry-template" type="text/x-handlebars-template">
             <div class="item" data-handle="{{handle}}">
@@ -110,7 +110,8 @@
 </div>
 <script>
     var people = [
-
+        {name: "AOL Inc",
+        handle:"AOL_Inc"},
         {
           name:"Mor Naaman",
           handle:"informor"
@@ -157,7 +158,8 @@
 
     $.getJSON("/rec/api/status", function(data){
         // toggle on those services that user already connected
-        if(data["connected-providers"]) {
+        if(data["connected-providers"] && data["connected-providers"].length) {
+            $(".button").removeClass("disabled");
             data["connected-providers"].forEach(function (provider) {
                 $("." + provider).checkbox('check');
             });
