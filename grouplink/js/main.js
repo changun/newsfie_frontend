@@ -113,7 +113,9 @@ function loadMoreStories (callback){
         count: 50,
         twitter: url('?twitter'),
         "dickens": url('?dickens'),
-        ignores: Object.keys(shown)
+        ignores: Object.keys(shown),
+        group: url('?group') ? url('?group').split(","): null
+
     };
     loading = true;
     api("meetup", data, function(data){
