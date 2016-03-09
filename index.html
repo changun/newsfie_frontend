@@ -55,31 +55,31 @@
                     <input data-provider="twitter" type="checkbox">
                 </div>
             </div>
-
-            <div  class="field">
-                <div class="ui toggle checkbox slack">
-                    <label>Slack</label>
-                    <input data-provider="slack" type="checkbox">
-                </div>
-            </div>
             <!--
-                            <h3 class="ui dividing header">Choose a news source</h3>
-            <div class="grouped inline fields">
-                <div class="field">
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="news" checked="checked" value="medium">
-                        <label>Medium.com</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="news" value="hn">
-                        <label>Hacker New</label>
-                    </div>
-                </div>
+                        <div  class="field">
+                            <div class="ui toggle checkbox slack">
+                                <label>Slack</label>
+                                <input data-provider="slack" type="checkbox">
+                            </div>
+                        </div>-->
+                        <!--
+                                        <h3 class="ui dividing header">Choose a news source</h3>
+                        <div class="grouped inline fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="news" checked="checked" value="medium">
+                                    <label>Medium.com</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="news" value="hn">
+                                    <label>Hacker New</label>
+                                </div>
+                            </div>
 
-            </div>
-             -->
+                        </div>
+                         -->
 
             <div class="ui primary button">
                 <i class="forward mail icon"></i>
@@ -107,7 +107,7 @@
     <div class="ui list huge" id="twitters">
         <script id="entry-template" type="text/x-handlebars-template">
             <div class="item" data-handle="{{handle}}">
-                <img class="ui avatar image" src="https://twitter.com/{{handle}}/profile_image?size=normal">
+                <img class="ui avatar image" src="/rec/profile_image/{{handle}}">
                 <div class="content">
                     <a class="header">{{name}}</a>
                     <a class="description">@{{handle}}</a>
@@ -118,7 +118,7 @@
 
     <div class="ui list huge">
         <div class="item" data-handle="Charles_Dickens">
-            <img class="ui avatar image" src="https://twitter.com/Charles_Dickens/profile_image?size=normal">
+            <img class="ui avatar image" src="/rec/profile_image/Charles_Dickens">
             <div class="content">
                 <a class="header">Charles Dickens</a>
                 <a class="description">His letters from 1835 to 1857</a>
@@ -137,6 +137,10 @@
          handle:"BarackObama"
         },
         {
+            name:"Michelle Obama",
+            handle:"FLOTUS"
+        },
+        {
             name:"Danah Boyd",
             handle:  "zephoria"
         },
@@ -145,6 +149,18 @@
         },
         {   name:"Bill Gates",
             handle:"BillGates"
+        },
+        {
+            name:"Natalie Portman",
+            handle:"natpdotcom"
+        },
+        {
+            name:"Carol Rosenberg",
+            handle:"carolrosenberg"
+        },
+        {
+            name:"Justin Hendrix",
+            handle:"justinhendrix"
         },
         {
             name:"Hilary Mason",
